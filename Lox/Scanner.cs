@@ -83,7 +83,24 @@ namespace Lox
                     if (Match('/'))
                     {
                         // A comment goes until the end of the line.
-                        while (Peek() != '\n' && !IsAtEnd()) Advance();
+                        while (Peek() != '\n' && !IsAtEnd())
+                        {
+                            Advance();
+                        }
+                    }
+                    else if (Match('*'))
+                    {
+                        while (!IsAtEnd())
+                        {
+                            if (Peek() == '*' && PeekNext() == '/')
+                            {
+                                Advance();
+                                Advance();
+                                break;
+                            }
+                         
+                            Advance();
+                        }
                     }
                     else
                     {
