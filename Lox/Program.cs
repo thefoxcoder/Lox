@@ -55,17 +55,33 @@ namespace Lox
         {
             var scanner = new Scanner(source);
             var tokens = scanner.ScanTokens();
+            var parser = new Parser(tokens);
+            var expression = parser.Parse();
 
-            // For now, just print the tokens.
-            foreach (var token in tokens)
+            // Stop if there was a syntax error.
+            if (HadError)
             {
-                Console.Write(token);
+                return;
             }
+
+            Console.WriteLine(new AstPrinter().Print(expression));
         }
 
         public static void Error(int line, String message)
         {
             Report(line, "", message);
+        }
+
+        public static void Error(Token token, String message)
+        {
+            if (token.Type == TokenType.EOF)
+            {
+                Report(token.Line, " at end", message);
+            }
+            else
+            {
+                Report(token.Line, " at '" + token.Lexeme + "'", message);
+            }
         }
 
         private static void Report(int line, string where, string message)
