@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -32,7 +33,28 @@ namespace Lox
 
         private Expr Expression()
         {
-            return Equality();
+            return Ternary();
+        }
+
+        private Expr Ternary()
+        {
+            var expr = Equality();  //How to parse another ternary?!
+
+            if (Match(TokenType.TERNARY_QUESTION_MARK))
+            {
+                var ifTrue = Ternary();
+                
+                if (!Match(TokenType.TERNARY_COLON))
+                {
+                    throw Error(Peek(), "Expected :");
+                }
+
+                var ifFalse = Ternary();
+
+                expr = new Expr.Ternary(expr, ifTrue, ifFalse);
+            }
+
+            return expr;
         }
 
         private Expr Equality()

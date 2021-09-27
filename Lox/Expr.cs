@@ -23,6 +23,25 @@
             }
         }
 
+        public class Ternary : Expr
+        {
+            public Expr Condition;
+            public Expr IfTrue;
+            public Expr IfFalse;
+
+            public Ternary(Expr condition, Expr ifTrue, Expr ifFalse)
+            {
+                Condition = condition;
+                IfTrue = ifTrue;
+                IfFalse = ifFalse;
+            }
+
+            public override R Accept<R>(IVisitor<R> visitor)
+            {
+                return visitor.Visit(this);
+            }
+        }
+
         public class Grouping : Expr
         {
             public Expr Expression;

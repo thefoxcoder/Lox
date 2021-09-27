@@ -65,6 +65,8 @@ namespace Lox
                 case '.': AddToken(TokenType.DOT); break;
                 case '-': AddToken(TokenType.MINUS); break;
                 case '+': AddToken(TokenType.PLUS); break;
+                case '?': AddToken(TokenType.TERNARY_QUESTION_MARK); break;
+                case ':': AddToken(TokenType.TERNARY_COLON); break;
                 case ';': AddToken(TokenType.SEMICOLON); break;
                 case '*': AddToken(TokenType.STAR); break;
                 case '!':
@@ -98,7 +100,7 @@ namespace Lox
                                 Advance();
                                 break;
                             }
-                         
+
                             Advance();
                         }
                     }
@@ -168,7 +170,10 @@ namespace Lox
             Advance();
 
             // Trim the surrounding quotes.
-            var value = Source.Substring(_start + 1, _current - _start - 1);
+            var startOfLiteralIndex = _start + 1;
+            var endOfLiteralIndex = _current - startOfLiteralIndex - 1;
+
+            var value = Source.Substring(startOfLiteralIndex, endOfLiteralIndex);
             AddToken(TokenType.STRING, value);
         }
 

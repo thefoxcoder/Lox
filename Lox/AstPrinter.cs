@@ -18,6 +18,11 @@ namespace Lox
             return Parenthesize(expr.Op.Lexeme, expr.Left, expr.Right);
         }
 
+        public string Visit(Expr.Ternary expr)
+        {
+            return Parenthesize("ternary", expr.Condition, expr.IfTrue, expr.IfFalse);
+        }
+
         public string Visit(Expr.Grouping expr)
         {
             return Parenthesize("group", expr.Expression);

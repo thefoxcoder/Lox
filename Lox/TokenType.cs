@@ -10,7 +10,8 @@
         BANG, BANG_EQUAL,
         EQUAL, EQUAL_EQUAL,
         GREATER, GREATER_EQUAL,
-        LESS, LESS_EQUAL,
+        LESS, LESS_EQUAL, 
+        TERNARY_QUESTION_MARK, TERNARY_COLON,
 
         // Literals.
         IDENTIFIER, STRING, NUMBER,
