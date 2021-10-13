@@ -63,7 +63,7 @@ namespace Lox
             var scanner = new Scanner(source);
             var tokens = scanner.ScanTokens();
             var parser = new Parser(tokens);
-            var expression = parser.Parse();
+            var statements = parser.Parse();
 
             // Stop if there was a syntax error.
             if (HadError)
@@ -71,7 +71,7 @@ namespace Lox
                 return;
             }
             
-            _interpreter.Interpret(expression);
+            _interpreter.Interpret(statements);
             //Console.WriteLine(new AstPrinter().Print(expression));
         }
 

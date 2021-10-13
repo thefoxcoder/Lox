@@ -6,22 +6,23 @@ using System.Threading.Tasks;
 
 namespace Lox
 {
-    public class Interpreter : IVisitor<Object>
+    public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object>
     {
-        public void Interpret(Expr expression)
+        public void Interpret(List<Stmt> statements)
         {
             try
             {
-                var value = Evaluate(expression);
-                Console.WriteLine(Stringify(value));
+                foreach (var statement in statements)
+                {
+                    Execute(statement);
+                }
             }
             catch (RuntimeError error)
             {
                 Lox.RuntimeError(error);
             }
         }
-
-
+        
         public object Visit(Expr.Binary expr)
         {
             var left = Evaluate(expr.Left);
@@ -111,6 +112,11 @@ namespace Lox
             return expr.Accept(this);
         }
 
+        private void Execute(Stmt stmt)
+        {
+            stmt.Accept(this);
+        }
+
         public object Visit(Expr.Literal expr)
         {
             return expr.Value;
@@ -165,6 +171,19 @@ namespace Lox
         public object Visit(Expr.Variable expr)
         {
             throw new NotImplementedException();
+        }
+
+        public object VisitExpressionStmt(Stmt.Expression stmt)
+        {
+            Evaluate(stmt.Expr);
+            return null;
+        }
+
+        public object VisitPrintStmt(Stmt.Print stmt)
+        {
+            var value = Evaluate(stmt.Expr);
+            Console.WriteLine(Stringify(value));
+            return null;
         }
     }
 }
