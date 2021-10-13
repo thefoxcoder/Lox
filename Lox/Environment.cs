@@ -12,7 +12,14 @@ namespace Lox
 
         public void Define(string name, object value)
         {
-            _values.Add(name, value);
+            if (_values.ContainsKey(name))
+            {
+                _values[name] = value;
+            }
+            else
+            {
+                _values.Add(name, value);
+            }
         }
 
         public object Get(Token name)
@@ -20,6 +27,17 @@ namespace Lox
             if (_values.ContainsKey(name.Lexeme))
             {
                 return _values[name.Lexeme];
+            }
+
+            throw new RuntimeError(name, $"Undefined variable {name.Lexeme}.");
+        }
+
+        public void Assign(Token name, object value)
+        {
+            if (_values.ContainsKey(name.Lexeme))
+            {
+                _values[name.Lexeme] = value;
+                return;
             }
 
             throw new RuntimeError(name, $"Undefined variable {name.Lexeme}.");

@@ -24,7 +24,14 @@ namespace Lox
                 Lox.RuntimeError(error);
             }
         }
-        
+
+        public object VisitAssignExpr(Expr.Assign expr)
+        {
+            var value = Evaluate(expr.Value);
+            _environment.Assign(expr.Name, value);
+            return value;
+        }
+
         public object VisitBinaryExpr(Expr.Binary expr)
         {
             var left = Evaluate(expr.Left);

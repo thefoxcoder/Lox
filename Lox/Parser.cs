@@ -33,7 +33,8 @@ namespace Lox
 
         private Expr Expression()
         {
-            return Ternary();
+            return Assignment();
+            //return Ternary();
         }
 
         private Stmt Declaration()
@@ -86,9 +87,29 @@ namespace Lox
             return new Stmt.Expression(expr);
         }
 
+        private Expr Assignment()
+        {
+            var expr = Ternary();
+
+            if (Match(TokenType.EQUAL))
+            {
+                var equals = Previous();
+                var value = Assignment();
+
+                if (expr is Expr.Variable) {
+                    var name = ((Expr.Variable)expr).Name;
+                    return new Expr.Assign(name, value);
+                }
+
+                Error(equals, "Invalid assignment target.");
+            }
+
+            return expr;
+        }
+
         private Expr Ternary()
         {
-            var expr = Equality();  //How to parse another ternary?!
+            var expr = Equality();
 
             if (Match(TokenType.TERNARY_QUESTION_MARK))
             {

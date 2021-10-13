@@ -4,6 +4,7 @@
     {
         public interface IVisitor<R>
         {
+            R VisitAssignExpr(Expr.Assign expr);
             R VisitBinaryExpr(Expr.Binary expr);
             R VisitTernaryExpr(Expr.Ternary expr);
             R VisitGroupingExpr(Expr.Grouping expr);
@@ -14,6 +15,23 @@
         }
 
         public abstract R Accept<R>(IVisitor<R> visitor);
+
+        public class Assign : Expr
+        {
+            public Token Name;
+            public Expr Value;
+
+            public Assign(Token name, Expr value)
+            {
+                Name = name;
+                Value = value;
+            }
+
+            public override R Accept<R>(IVisitor<R> visitor)
+            {
+                return visitor.VisitAssignExpr(this);
+            }
+        }
 
         public class Binary : Expr
         {

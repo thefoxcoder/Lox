@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Lox
 {
@@ -11,6 +8,11 @@ namespace Lox
         public string Print(Expr expr)
         {
             return expr.Accept(this);
+        }
+
+        public string VisitAssignExpr(Expr.Assign expr)
+        {
+            throw new NotImplementedException();
         }
 
         public string VisitBinaryExpr(Expr.Binary expr)
