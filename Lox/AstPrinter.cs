@@ -13,37 +13,37 @@ namespace Lox
             return expr.Accept(this);
         }
 
-        public string Visit(Expr.Binary expr)
+        public string VisitBinaryExpr(Expr.Binary expr)
         {
             return Parenthesize(expr.Op.Lexeme, expr.Left, expr.Right);
         }
 
-        public string Visit(Expr.Ternary expr)
+        public string VisitTernaryExpr(Expr.Ternary expr)
         {
             return Parenthesize("ternary", expr.Condition, expr.IfTrue, expr.IfFalse);
         }
 
-        public string Visit(Expr.Grouping expr)
+        public string VisitGroupingExpr(Expr.Grouping expr)
         {
             return Parenthesize("group", expr.Expression);
         }
 
-        public string Visit(Expr.Literal expr)
+        public string VisitLiteralExpr(Expr.Literal expr)
         {
             return expr.Value?.ToString() ?? "nil";
         }
 
-        public string Visit(Expr.Logical expr)
+        public string VisitLogicalExpr(Expr.Logical expr)
         {
             return Parenthesize(expr.Op.Lexeme, expr.Left, expr.Right);
         }
 
-        public string Visit(Expr.Unary expr)
+        public string VisitUnaryExpr(Expr.Unary expr)
         {
             return Parenthesize(expr.Op.Lexeme, expr.Right);
         }
 
-        public string Visit(Expr.Variable expr)
+        public string VisitVariableExpr(Expr.Variable expr)
         {
             return Parenthesize("var", expr);
         }

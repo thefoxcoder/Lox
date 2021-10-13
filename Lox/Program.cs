@@ -32,12 +32,12 @@ namespace Lox
 
             if (HadError)
             {
-                Environment.Exit(65); //Error code?
+                System.Environment.Exit(65); //Error code?
             }
 
             if (HadRuntimeError)
             {
-                Environment.Exit(70); //Error code?
+                System.Environment.Exit(70); //Error code?
             }
         }
 

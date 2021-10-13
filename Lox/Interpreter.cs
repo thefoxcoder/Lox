@@ -8,6 +8,8 @@ namespace Lox
 {
     public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object>
     {
+        private Environment _environment = new();
+
         public void Interpret(List<Stmt> statements)
         {
             try
@@ -23,7 +25,7 @@ namespace Lox
             }
         }
         
-        public object Visit(Expr.Binary expr)
+        public object VisitBinaryExpr(Expr.Binary expr)
         {
             var left = Evaluate(expr.Left);
             var right = Evaluate(expr.Right);
@@ -97,12 +99,12 @@ namespace Lox
             return obj.ToString();
         }
 
-        public object Visit(Expr.Ternary expr)
+        public object VisitTernaryExpr(Expr.Ternary expr)
         {
             throw new NotImplementedException();
         }
 
-        public object Visit(Expr.Grouping expr)
+        public object VisitGroupingExpr(Expr.Grouping expr)
         {
             return Evaluate(expr.Expression);
         }
@@ -117,17 +119,17 @@ namespace Lox
             stmt.Accept(this);
         }
 
-        public object Visit(Expr.Literal expr)
+        public object VisitLiteralExpr(Expr.Literal expr)
         {
             return expr.Value;
         }
 
-        public object Visit(Expr.Logical expr)
+        public object VisitLogicalExpr(Expr.Logical expr)
         {
             throw new NotImplementedException();
         }
 
-        public object Visit(Expr.Unary expr)
+        public object VisitUnaryExpr(Expr.Unary expr)
         {
             var right = Evaluate(expr.Right);
 
@@ -168,9 +170,9 @@ namespace Lox
             return true;
         }
 
-        public object Visit(Expr.Variable expr)
+        public object VisitVariableExpr(Expr.Variable expr)
         {
-            throw new NotImplementedException();
+            return _environment.Get(expr.Name);
         }
 
         public object VisitExpressionStmt(Stmt.Expression stmt)
@@ -183,6 +185,18 @@ namespace Lox
         {
             var value = Evaluate(stmt.Expr);
             Console.WriteLine(Stringify(value));
+            return null;
+        }
+
+        public object VisitVarStmt(Stmt.Var stmt)
+        {
+            object value = null;
+
+            if(stmt.Initializer != null) {
+                value = Evaluate(stmt.Initializer);
+            }
+
+            _environment.Define(stmt.Name.Lexeme, value);
             return null;
         }
     }

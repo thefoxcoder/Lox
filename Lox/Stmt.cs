@@ -6,6 +6,7 @@
         {
             R VisitExpressionStmt(Stmt.Expression stmt);
             R VisitPrintStmt(Stmt.Print stmt);
+            R VisitVarStmt(Stmt.Var stmt);
         }
 
         public abstract R Accept<R>(IVisitor<R> visitor);
@@ -37,6 +38,23 @@
             public override R Accept<R>(IVisitor<R> visitor)
             {
                 return visitor.VisitPrintStmt(this);
+            }
+        }
+
+        public class Var : Stmt
+        {
+            public Token Name;
+            public Expr Initializer;
+
+            public Var(Token name, Expr initializer)
+            {
+                Name = name;
+                Initializer = initializer;
+            }
+
+            public override R Accept<R>(IVisitor<R> visitor)
+            {
+                return visitor.VisitVarStmt(this);
             }
         }
     }

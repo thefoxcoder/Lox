@@ -4,13 +4,13 @@
     {
         public interface IVisitor<R>
         {
-            R Visit(Expr.Binary expr);
-            R Visit(Expr.Ternary expr);
-            R Visit(Expr.Grouping expr);
-            R Visit(Expr.Literal expr);
-            R Visit(Expr.Logical expr);
-            R Visit(Expr.Unary expr);
-            R Visit(Expr.Variable expr);
+            R VisitBinaryExpr(Expr.Binary expr);
+            R VisitTernaryExpr(Expr.Ternary expr);
+            R VisitGroupingExpr(Expr.Grouping expr);
+            R VisitLiteralExpr(Expr.Literal expr);
+            R VisitLogicalExpr(Expr.Logical expr);
+            R VisitUnaryExpr(Expr.Unary expr);
+            R VisitVariableExpr(Expr.Variable expr);
         }
 
         public abstract R Accept<R>(IVisitor<R> visitor);
@@ -30,7 +30,7 @@
 
             public override R Accept<R>(IVisitor<R> visitor)
             {
-                return visitor.Visit(this);
+                return visitor.VisitBinaryExpr(this);
             }
         }
 
@@ -49,7 +49,7 @@
 
             public override R Accept<R>(IVisitor<R> visitor)
             {
-                return visitor.Visit(this);
+                return visitor.VisitTernaryExpr(this);
             }
         }
 
@@ -64,7 +64,7 @@
 
             public override R Accept<R>(IVisitor<R> visitor)
             {
-                return visitor.Visit(this);
+                return visitor.VisitGroupingExpr(this);
             }
 
         }
@@ -80,7 +80,7 @@
 
             public override R Accept<R>(IVisitor<R> visitor)
             {
-                return visitor.Visit(this);
+                return visitor.VisitLiteralExpr(this);
             }
         }
 
@@ -99,7 +99,7 @@
 
             public override R Accept<R>(IVisitor<R> visitor)
             {
-                return visitor.Visit(this);
+                return visitor.VisitLogicalExpr(this);
             }
 
         }
@@ -117,7 +117,7 @@
 
             public override R Accept<R>(IVisitor<R> visitor)
             {
-                return visitor.Visit(this);
+                return visitor.VisitUnaryExpr(this);
             }
         }
 
@@ -132,7 +132,7 @@
 
             public override R Accept<R>(IVisitor<R> visitor)
             {
-                return visitor.Visit(this);
+                return visitor.VisitVariableExpr(this);
             }
         }
     }
