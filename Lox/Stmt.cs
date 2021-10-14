@@ -1,4 +1,6 @@
-﻿namespace Lox
+﻿using System.Collections.Generic;
+
+namespace Lox
 {
     public abstract class Stmt
     {
@@ -7,6 +9,7 @@
             R VisitExpressionStmt(Stmt.Expression stmt);
             R VisitPrintStmt(Stmt.Print stmt);
             R VisitVarStmt(Stmt.Var stmt);
+            R VisitBlockStmt(Stmt.Block stmt);
         }
 
         public abstract R Accept<R>(IVisitor<R> visitor);
@@ -55,6 +58,22 @@
             public override R Accept<R>(IVisitor<R> visitor)
             {
                 return visitor.VisitVarStmt(this);
+            }
+        }
+
+        public class Block : Stmt
+        {
+            public List<Stmt> Statements;
+
+            public Block(List<Stmt> statements)
+            {
+                Statements = statements;
+            }
+
+
+            public override R Accept<R>(IVisitor<R> visitor)
+            {
+                return visitor.VisitBlockStmt(this);
             }
         }
     }

@@ -54,7 +54,8 @@ namespace Lox
                         return (double)left + (double)right;
                     }
 
-                    if (left is string && right is string) {
+                    if (left is string && right is string)
+                    {
                         return (string)left + (string)right;
                     }
 
@@ -91,9 +92,10 @@ namespace Lox
         {
             if (obj == null) return "nil";
 
-            if (obj is double) {
+            if (obj is double)
+            {
                 string text = obj.ToString();
-                
+
                 if (text.EndsWith(".0"))
                 {
                     text = text.Substring(0, text.Length - 2); //todo: Correct?
@@ -199,12 +201,38 @@ namespace Lox
         {
             object value = null;
 
-            if(stmt.Initializer != null) {
+            if (stmt.Initializer != null)
+            {
                 value = Evaluate(stmt.Initializer);
             }
 
             _environment.Define(stmt.Name.Lexeme, value);
             return null;
+        }
+
+        public object VisitBlockStmt(Stmt.Block stmt)
+        {
+            ExecuteBlock(stmt.Statements, new Environment(_environment));
+            return null;
+        }
+
+        private void ExecuteBlock(List<Stmt> statements, Environment environment)
+        {
+            var previous = this._environment;
+
+            try
+            {
+                _environment = environment;
+
+                foreach (var statement in statements)
+                {
+                    Execute(statement);
+                }
+            }
+            finally
+            {
+                _environment = previous;
+            }
         }
     }
 }

@@ -8,7 +8,18 @@ namespace Lox
 {
     public class Environment
     {
+        public readonly Environment Enclosing;
         private readonly Dictionary<string, object> _values = new();
+
+        public Environment()
+        {
+            
+        }
+
+        public Environment(Environment enclosing)
+        {
+            Enclosing = enclosing;
+        }
 
         public void Define(string name, object value)
         {
@@ -29,6 +40,11 @@ namespace Lox
                 return _values[name.Lexeme];
             }
 
+            if (Enclosing != null)
+            {
+                return Enclosing.Get(name);
+            }
+
             throw new RuntimeError(name, $"Undefined variable {name.Lexeme}.");
         }
 
@@ -37,6 +53,12 @@ namespace Lox
             if (_values.ContainsKey(name.Lexeme))
             {
                 _values[name.Lexeme] = value;
+                return;
+            }
+
+            if (Enclosing != null)
+            {
+                Enclosing.Assign(name, value);
                 return;
             }
 

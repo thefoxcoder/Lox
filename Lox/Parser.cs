@@ -54,7 +54,15 @@ namespace Lox
 
         private Stmt Statement()
         {
-            if (Match(TokenType.PRINT)) return PrintStatement();
+            if (Match(TokenType.PRINT))
+            {
+                return PrintStatement();
+            }
+
+            if (Match(TokenType.LEFT_BRACE))
+            {
+                return new Stmt.Block(Block());
+            }
 
             return ExpressionStatement();
         }
@@ -96,7 +104,8 @@ namespace Lox
                 var equals = Previous();
                 var value = Assignment();
 
-                if (expr is Expr.Variable) {
+                if (expr is Expr.Variable)
+                {
                     var name = ((Expr.Variable)expr).Name;
                     return new Expr.Assign(name, value);
                 }
@@ -107,6 +116,19 @@ namespace Lox
             return expr;
         }
 
+        private List<Stmt> Block()
+        {
+            var statements = new List<Stmt>();
+
+            while (!Check(TokenType.RIGHT_BRACE) && !IsAtEnd())
+            {
+                statements.Add(Declaration());
+            }
+
+            Consume(TokenType.RIGHT_BRACE, "Expect '}' after block.");
+            return statements;
+        }
+
         private Expr Ternary()
         {
             var expr = Equality();
@@ -114,7 +136,7 @@ namespace Lox
             if (Match(TokenType.TERNARY_QUESTION_MARK))
             {
                 var ifTrue = Ternary();
-                
+
                 if (!Match(TokenType.TERNARY_COLON))
                 {
                     throw Error(Peek(), "Expected :");
