@@ -5,9 +5,9 @@ namespace Lox
 {
     class Lox
     {
-        static bool HadError = false;
-        static bool HadRuntimeError = false;
-        private static Interpreter _interpreter = new Interpreter();
+        private static bool _hadError = false;
+        private static bool _hadRuntimeError = false;
+        private static readonly Interpreter Interpreter = new();
 
         static void Main(string[] args)
         {
@@ -30,12 +30,12 @@ namespace Lox
             var text = File.ReadAllText(Path.GetFullPath(path));
             Run(text);
 
-            if (HadError)
+            if (_hadError)
             {
                 System.Environment.Exit(65); //Error code?
             }
 
-            if (HadRuntimeError)
+            if (_hadRuntimeError)
             {
                 System.Environment.Exit(70); //Error code?
             }
@@ -54,28 +54,28 @@ namespace Lox
                     break;
                 }
                 Run(line);
-                HadError = false;
+                _hadError = false;
             }
         }
 
-        private static void Run(String source)
+        private static void Run(string source)
         {
             var scanner = new Scanner(source);
             var tokens = scanner.ScanTokens();
+
             var parser = new Parser(tokens);
             var statements = parser.Parse();
 
             // Stop if there was a syntax error.
-            if (HadError)
+            if (_hadError)
             {
                 return;
             }
             
-            _interpreter.Interpret(statements);
-            //Console.WriteLine(new AstPrinter().Print(expression));
+            Interpreter.Interpret(statements);
         }
 
-        public static void Error(int line, String message)
+        public static void Error(int line, string message)
         {
             Report(line, "", message);
         }
@@ -83,10 +83,10 @@ namespace Lox
         public static void RuntimeError(RuntimeError error)
         {
             Console.Error.WriteLine(error.Message + "\n[line " + error.Token.Line + "]");
-            HadRuntimeError = true;
+            _hadRuntimeError = true;
         }
 
-        public static void Error(Token token, String message)
+        public static void Error(Token token, string message)
         {
             if (token.Type == TokenType.EOF)
             {
@@ -106,7 +106,7 @@ namespace Lox
             }
 
             Console.Error.WriteLine($"[line {line}] Error {where}: {message}");
-            HadError = true;
+            _hadError = true;
         }
     }
 }
