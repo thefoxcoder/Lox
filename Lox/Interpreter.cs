@@ -137,9 +137,11 @@ namespace Lox
         {
             var left = Evaluate(expr.Left);
 
-            if (expr.Op.Type == TokenType.OR) {
+            if (expr.Op.Type == TokenType.OR)
+            {
                 if (IsTruthy(left)) return left;
-            } else
+            }
+            else
             {
                 if (!IsTruthy(left)) return left;
             }
@@ -230,9 +232,20 @@ namespace Lox
             if (IsTruthy(stmt.Condition))
             {
                 Execute(stmt.ThenBranch);
-            } else if (stmt.ElseBranch != null)
+            }
+            else if (stmt.ElseBranch != null)
             {
                 Execute(stmt.ElseBranch);
+            }
+
+            return null;
+        }
+
+        public object VisitWhileStmt(Stmt.While stmt)
+        {
+            while (IsTruthy(Evaluate(stmt.Condition)))
+            {
+                Execute(stmt.Body);
             }
 
             return null;

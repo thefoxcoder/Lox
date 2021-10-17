@@ -59,6 +59,11 @@ namespace Lox
                 return IfStatement();
             }
 
+            if (Match(TokenType.WHILE))
+            {
+                return WhileStatement();
+            }
+
             if (Match(TokenType.PRINT))
             {
                 return PrintStatement();
@@ -108,6 +113,16 @@ namespace Lox
 
             Consume(TokenType.SEMICOLON, "Expect ';' after variable declaration.");
             return new Stmt.Var(name, initializer);
+        }
+
+        private Stmt WhileStatement()
+        {
+            Consume(TokenType.LEFT_PAREN, "Expect '(' after 'while'.");
+            var condition = Expression();
+            Consume(TokenType.RIGHT_PAREN, "Expect ')' after condition.");
+            var body = Statement();
+
+            return new Stmt.While(condition, body);
         }
 
         private Stmt ExpressionStatement()

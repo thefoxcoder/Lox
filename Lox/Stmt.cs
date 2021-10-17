@@ -11,6 +11,7 @@ namespace Lox
             R VisitVarStmt(Stmt.Var stmt);
             R VisitBlockStmt(Stmt.Block stmt);
             R VisitIfStmt(Stmt.If stmt);
+            R VisitWhileStmt(Stmt.While stmt);
         }
 
         public abstract R Accept<R>(IVisitor<R> visitor);
@@ -59,6 +60,23 @@ namespace Lox
             public override R Accept<R>(IVisitor<R> visitor)
             {
                 return visitor.VisitVarStmt(this);
+            }
+        }
+
+        public class While : Stmt
+        {
+            public Expr Condition;
+            public Stmt Body;
+
+            public While(Expr condition, Stmt body)
+            {
+                Condition = condition;
+                Body = body;
+            }
+
+            public override R Accept<R>(IVisitor<R> visitor)
+            {
+                return visitor.VisitWhileStmt(this);
             }
         }
 
