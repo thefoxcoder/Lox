@@ -10,6 +10,7 @@ namespace Lox
             R VisitPrintStmt(Stmt.Print stmt);
             R VisitVarStmt(Stmt.Var stmt);
             R VisitBlockStmt(Stmt.Block stmt);
+            R VisitIfStmt(Stmt.If stmt);
         }
 
         public abstract R Accept<R>(IVisitor<R> visitor);
@@ -74,6 +75,25 @@ namespace Lox
             public override R Accept<R>(IVisitor<R> visitor)
             {
                 return visitor.VisitBlockStmt(this);
+            }
+        }
+
+        public class If : Stmt
+        {
+            public Expr Condition;
+            public Stmt ThenBranch;
+            public Stmt ElseBranch;
+
+            public If(Expr condition, Stmt thenBranch, Stmt elseBranch)
+            {
+                Condition = condition;
+                ThenBranch = thenBranch;
+                ElseBranch = elseBranch;
+            }
+
+            public override R Accept<R>(IVisitor<R> visitor)
+            {
+                return visitor.VisitIfStmt(this);
             }
         }
     }

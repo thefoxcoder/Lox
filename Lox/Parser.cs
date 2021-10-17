@@ -54,6 +54,11 @@ namespace Lox
 
         private Stmt Statement()
         {
+            if (Match(TokenType.IF))
+            {
+                return IfStatement();
+            }
+
             if (Match(TokenType.PRINT))
             {
                 return PrintStatement();
@@ -65,6 +70,23 @@ namespace Lox
             }
 
             return ExpressionStatement();
+        }
+
+        private Stmt IfStatement()
+        {
+            Consume(TokenType.LEFT_PAREN, "Expect '(' after 'if'.");
+            var condition = Expression();
+            Consume(TokenType.RIGHT_PAREN, "Expect ')' after if condition.");
+
+            var thenBranch = Statement();
+            Stmt elseBranch = null;
+
+            if (Match(TokenType.ELSE))
+            {
+                elseBranch = Statement();
+            }
+
+            return new Stmt.If(condition, thenBranch, elseBranch);
         }
 
         private Stmt PrintStatement()
@@ -97,7 +119,8 @@ namespace Lox
 
         private Expr Assignment()
         {
-            var expr = Ternary();
+            //var expr = Ternary();
+            var expr = Or();
 
             if (Match(TokenType.EQUAL))
             {
@@ -111,6 +134,34 @@ namespace Lox
                 }
 
                 Error(equals, "Invalid assignment target.");
+            }
+
+            return expr;
+        }
+
+        private Expr Or()
+        {
+            var expr = And();
+
+            while (Match(TokenType.OR))
+            {
+                var op = Previous();
+                var right = And();
+                expr = new Expr.Logical(expr, op, right);
+            }
+
+            return expr;
+        }
+
+        private Expr And()
+        {
+            var expr = Equality();
+
+            while (Match(TokenType.AND))
+            {
+                var op = Previous();
+                var right = Equality();
+                expr = new Expr.Logical(expr, op, right);
             }
 
             return expr;

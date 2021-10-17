@@ -115,11 +115,11 @@
                 Right = right;
             }
 
+
             public override R Accept<R>(IVisitor<R> visitor)
             {
                 return visitor.VisitLogicalExpr(this);
             }
-
         }
 
         public class Unary : Expr

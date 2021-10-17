@@ -135,7 +135,16 @@ namespace Lox
 
         public object VisitLogicalExpr(Expr.Logical expr)
         {
-            throw new NotImplementedException();
+            var left = Evaluate(expr.Left);
+
+            if (expr.Op.Type == TokenType.OR) {
+                if (IsTruthy(left)) return left;
+            } else
+            {
+                if (!IsTruthy(left)) return left;
+            }
+
+            return Evaluate(expr.Right);
         }
 
         public object VisitUnaryExpr(Expr.Unary expr)
@@ -213,6 +222,19 @@ namespace Lox
         public object VisitBlockStmt(Stmt.Block stmt)
         {
             ExecuteBlock(stmt.Statements, new Environment(_environment));
+            return null;
+        }
+
+        public object VisitIfStmt(Stmt.If stmt)
+        {
+            if (IsTruthy(stmt.Condition))
+            {
+                Execute(stmt.ThenBranch);
+            } else if (stmt.ElseBranch != null)
+            {
+                Execute(stmt.ElseBranch);
+            }
+
             return null;
         }
 
