@@ -27,7 +27,7 @@ namespace Lox
         }
     }
 
-    public class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor<Object>
+    public class Interpreter : Expr.IVisitor<object>, Stmt.IVisitor<object>
     {
         public Environment Globals;
         private Environment _environment;
@@ -271,6 +271,18 @@ namespace Lox
             return null;
         }
 
+        public object VisitReturnStmt(Stmt.Return stmt)
+        {
+            object value = null;
+
+            if (stmt.Value != null)
+            {
+                value = Evaluate(stmt.Value);
+            }
+
+            throw new Return(value);
+        }
+
         public object VisitVarStmt(Stmt.Var stmt)
         {
             object value = null;
@@ -332,6 +344,16 @@ namespace Lox
             {
                 _environment = previous;
             }
+        }
+    }
+
+    public class Return : Exception
+    {
+        public readonly object Value;
+
+        public Return(object value)
+        {
+            Value = value;
         }
     }
 }

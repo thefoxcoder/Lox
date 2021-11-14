@@ -41,8 +41,15 @@ namespace Lox
         {
             try
             {
-                if (Match(TokenType.FUN)) return Function("function");
-                if (Match(TokenType.VAR)) return VarDeclaration();
+                if (Match(TokenType.FUN))
+                {
+                    return Function("function");
+                }
+
+                if (Match(TokenType.VAR))
+                {
+                    return VarDeclaration();
+                }
 
                 return Statement();
             }
@@ -69,6 +76,11 @@ namespace Lox
             if (Match(TokenType.WHILE))
             {
                 return WhileStatement();
+            }
+
+            if (Match(TokenType.RETURN))
+            {
+                return ReturnStatement();
             }
 
             if (Match(TokenType.PRINT))
@@ -160,6 +172,21 @@ namespace Lox
             var value = Expression();
             Consume(TokenType.SEMICOLON, "Expect ';' after value.");
             return new Stmt.Print(value);
+        }
+
+        private Stmt ReturnStatement()
+        {
+            var keyword = Previous();
+            Expr value = null;
+
+            if (!Check(TokenType.SEMICOLON))
+            {
+                value = Expression();
+            }
+
+            Consume(TokenType.SEMICOLON, "Expect ';' after return value.");
+
+            return new Stmt.Return(keyword, value);
         }
 
         private Stmt Function(string kind)

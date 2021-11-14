@@ -8,6 +8,7 @@ namespace Lox
         {
             R VisitExpressionStmt(Expression stmt);
             R VisitPrintStmt(Print stmt);
+            R VisitReturnStmt(Return @return);
             R VisitVarStmt(Var stmt);
             R VisitBlockStmt(Block stmt);
             R VisitIfStmt(If stmt);
@@ -44,6 +45,24 @@ namespace Lox
             public override R Accept<R>(IVisitor<R> visitor)
             {
                 return visitor.VisitPrintStmt(this);
+            }
+        }
+
+        public class Return : Stmt
+        {
+            public Token KeyWord;
+            public Expr Value;
+
+            public Return(Token keyWord, Expr value)
+            {
+                KeyWord = keyWord;
+                Value = value;
+            }
+
+
+            public override R Accept<R>(IVisitor<R> visitor)
+            {
+                return visitor.VisitReturnStmt(this);
             }
         }
 
