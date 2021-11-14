@@ -1,4 +1,7 @@
-﻿namespace Lox
+﻿using System.Collections;
+using System.Collections.Generic;
+
+namespace Lox
 {
     public abstract class Expr
     {
@@ -6,6 +9,7 @@
         {
             R VisitAssignExpr(Expr.Assign expr);
             R VisitBinaryExpr(Expr.Binary expr);
+            R VisitCallExpr(Expr.Call expr);
             R VisitTernaryExpr(Expr.Ternary expr);
             R VisitGroupingExpr(Expr.Grouping expr);
             R VisitLiteralExpr(Expr.Literal expr);
@@ -49,6 +53,25 @@
             public override R Accept<R>(IVisitor<R> visitor)
             {
                 return visitor.VisitBinaryExpr(this);
+            }
+        }
+
+        public class Call : Expr
+        {
+            public Expr Callee;
+            public Token Paren;
+            public List<Expr> Arguments;
+
+            public Call(Expr callee, Token paren, List<Expr> arguments)
+            {
+                Callee = callee;
+                Paren = paren;
+                Arguments = arguments;
+            }
+
+            public override R Accept<R>(IVisitor<R> visitor)
+            {
+                return visitor.VisitCallExpr(this);
             }
         }
 

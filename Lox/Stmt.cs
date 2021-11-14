@@ -6,12 +6,13 @@ namespace Lox
     {
         public interface IVisitor<R>
         {
-            R VisitExpressionStmt(Stmt.Expression stmt);
-            R VisitPrintStmt(Stmt.Print stmt);
-            R VisitVarStmt(Stmt.Var stmt);
-            R VisitBlockStmt(Stmt.Block stmt);
-            R VisitIfStmt(Stmt.If stmt);
-            R VisitWhileStmt(Stmt.While stmt);
+            R VisitExpressionStmt(Expression stmt);
+            R VisitPrintStmt(Print stmt);
+            R VisitVarStmt(Var stmt);
+            R VisitBlockStmt(Block stmt);
+            R VisitIfStmt(If stmt);
+            R VisitWhileStmt(While stmt);
+            R VisitFunctionStmt(Function function);
         }
 
         public abstract R Accept<R>(IVisitor<R> visitor);
@@ -112,6 +113,26 @@ namespace Lox
             public override R Accept<R>(IVisitor<R> visitor)
             {
                 return visitor.VisitIfStmt(this);
+            }
+        }
+
+        public class Function : Stmt
+        {
+            public Token Name;
+            public List<Token> Params;
+            public List<Stmt> Body;
+
+            public Function(Token name, List<Token> @params, List<Stmt> body)
+            {
+                Name = name;
+                Params = @params;
+                Body = body;
+            }
+
+
+            public override R Accept<R>(IVisitor<R> visitor)
+            {
+                return visitor.VisitFunctionStmt(this);
             }
         }
     }

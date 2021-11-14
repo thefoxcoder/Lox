@@ -20,6 +20,11 @@ namespace Lox
             return Parenthesize(expr.Op.Lexeme, expr.Left, expr.Right);
         }
 
+        public string VisitCallExpr(Expr.Call expr)
+        {
+            throw new NotImplementedException();
+        }
+
         public string VisitTernaryExpr(Expr.Ternary expr)
         {
             return Parenthesize("ternary", expr.Condition, expr.IfTrue, expr.IfFalse);
