@@ -20,7 +20,7 @@ namespace Lox
         {
             return 0;
         }
-     
+
         public override string ToString()
         {
             return "<native fn>";
@@ -248,6 +248,11 @@ namespace Lox
         public object VisitVariableExpr(Expr.Variable expr)
         {
             return _environment.Get(expr.Name);
+        }
+
+        public object VisitAnonymousFunctionExpr(Expr.AnonymousFunction expr)
+        {
+            return new LoxAnonymousFunction(expr, _environment);
         }
 
         public object VisitExpressionStmt(Stmt.Expression stmt)

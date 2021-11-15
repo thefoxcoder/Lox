@@ -7,15 +7,16 @@ namespace Lox
     {
         public interface IVisitor<R>
         {
-            R VisitAssignExpr(Expr.Assign expr);
-            R VisitBinaryExpr(Expr.Binary expr);
-            R VisitCallExpr(Expr.Call expr);
-            R VisitTernaryExpr(Expr.Ternary expr);
-            R VisitGroupingExpr(Expr.Grouping expr);
-            R VisitLiteralExpr(Expr.Literal expr);
-            R VisitLogicalExpr(Expr.Logical expr);
-            R VisitUnaryExpr(Expr.Unary expr);
-            R VisitVariableExpr(Expr.Variable expr);
+            R VisitAssignExpr(Assign expr);
+            R VisitBinaryExpr(Binary expr);
+            R VisitCallExpr(Call expr);
+            R VisitTernaryExpr(Ternary expr);
+            R VisitGroupingExpr(Grouping expr);
+            R VisitLiteralExpr(Literal expr);
+            R VisitLogicalExpr(Logical expr);
+            R VisitUnaryExpr(Unary expr);
+            R VisitVariableExpr(Variable expr);
+            R VisitAnonymousFunctionExpr(AnonymousFunction expr);
         }
 
         public abstract R Accept<R>(IVisitor<R> visitor);
@@ -174,6 +175,23 @@ namespace Lox
             public override R Accept<R>(IVisitor<R> visitor)
             {
                 return visitor.VisitVariableExpr(this);
+            }
+        }
+
+        public class AnonymousFunction : Expr
+        {
+            public List<Token> Params;
+            public List<Stmt> Body;
+
+            public AnonymousFunction(List<Token> @params, List<Stmt> body)
+            {
+                Params = @params;
+                Body = body;
+            }
+
+            public override R Accept<R>(IVisitor<R> visitor)
+            {
+                return visitor.VisitAnonymousFunctionExpr(this);
             }
         }
     }

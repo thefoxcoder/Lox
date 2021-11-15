@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lox
 {
@@ -33,8 +29,7 @@ namespace Lox
 
         private Expr Expression()
         {
-            return Assignment();
-            //return Ternary();
+            return AnonymousFunction();
         }
 
         private Stmt Declaration()
@@ -246,6 +241,37 @@ namespace Lox
             return new Stmt.Expression(expr);
         }
 
+        private Expr AnonymousFunction()
+        {
+            if (Match(TokenType.FUN))
+            {
+                Consume(TokenType.LEFT_PAREN, "Expect '(' after fun.");
+                var parameters = new List<Token>();
+
+                if (!Check(TokenType.RIGHT_PAREN))
+                {
+                    do
+                    {
+                        if (parameters.Count >= 255)
+                        {
+                            Error(Peek(), "Can't have more than 255 parameters.");
+                        }
+
+                        parameters.Add(Consume(TokenType.IDENTIFIER, "Expect parameter name."));
+                    } while (Match(TokenType.COMMA));
+                }
+
+                Consume(TokenType.RIGHT_PAREN, "Expect ')' after parameters.");
+                Consume(TokenType.LEFT_BRACE, $"Expect {{ before function body.");
+
+                var body = Block();
+
+                return new Expr.AnonymousFunction(parameters, body);
+            }
+
+            return Assignment();
+        }
+
         private Expr Assignment()
         {
             //var expr = Ternary();
@@ -254,7 +280,7 @@ namespace Lox
             if (Match(TokenType.EQUAL))
             {
                 var equals = Previous();
-                var value = Assignment();
+                var value = AnonymousFunction();
 
                 if (expr is Expr.Variable)
                 {

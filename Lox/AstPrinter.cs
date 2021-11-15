@@ -55,6 +55,11 @@ namespace Lox
             return Parenthesize("var", expr);
         }
 
+        public string VisitAnonymousFunctionExpr(Expr.AnonymousFunction expr)
+        {
+            throw new NotImplementedException();
+        }
+
         private string Parenthesize(string name, params Expr[] exprs)
         {
             var builder = new StringBuilder();
