@@ -8,12 +8,12 @@ namespace Lox
         {
             R VisitExpressionStmt(Expression stmt);
             R VisitPrintStmt(Print stmt);
-            R VisitReturnStmt(Return @return);
+            R VisitReturnStmt(Return stmt);
             R VisitVarStmt(Var stmt);
             R VisitBlockStmt(Block stmt);
             R VisitIfStmt(If stmt);
             R VisitWhileStmt(While stmt);
-            R VisitFunctionStmt(Function function);
+            R VisitFunctionStmt(Function stmt);
         }
 
         public abstract R Accept<R>(IVisitor<R> visitor);

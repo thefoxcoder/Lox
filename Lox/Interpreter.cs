@@ -31,6 +31,7 @@ namespace Lox
     {
         public Environment Globals;
         private Environment _environment;
+        private readonly Dictionary<Expr, int> _locals = new();
 
         public Interpreter()
         {
@@ -58,7 +59,18 @@ namespace Lox
         public object VisitAssignExpr(Expr.Assign expr)
         {
             var value = Evaluate(expr.Value);
-            _environment.Assign(expr.Name, value);
+
+            var foundLocal = _locals.TryGetValue(expr, out var distance);
+
+            if (foundLocal)
+            {
+                _environment.AssignAt(distance, expr.Name, value);
+            }
+            else
+            {
+                _environment.Assign(expr.Name, value);
+            }
+
             return value;
         }
 
@@ -183,6 +195,11 @@ namespace Lox
             stmt.Accept(this);
         }
 
+        public void Resolve(Expr expr, int depth)
+        {
+            _locals.Add(expr, depth);
+        }
+
         public object VisitLiteralExpr(Expr.Literal expr)
         {
             return expr.Value;
@@ -247,7 +264,19 @@ namespace Lox
 
         public object VisitVariableExpr(Expr.Variable expr)
         {
-            return _environment.Get(expr.Name);
+            return LookUpVariable(expr.Name, expr);
+        }
+
+        private object LookUpVariable(Token name, Expr expr)
+        {
+            var foundLocal = _locals.TryGetValue(expr, out var distance);
+
+            if (foundLocal)
+            {
+                return _environment.GetAt(distance, name.Lexeme);
+            }
+
+            return Globals.Get(name);
         }
 
         public object VisitAnonymousFunctionExpr(Expr.AnonymousFunction expr)
